@@ -23,19 +23,19 @@ public class HeapStorageManagerTest {
 
   @Test(expected = IllegalStateException.class)
   public void testCantAttachMapIfNotStarted() {
-    new HeapStorageManager(new HeapKeyValueStorageFactory()).attachMap("whatever!", new HeapKeyValueStorage<Object, Object>(), Object.class, Object.class);
+    new HeapStorageManager(new HeapKeyValueStorageFactory()).attachKeyValueStorage("whatever!", new HeapKeyValueStorage<Object, Object>(), Object.class, Object.class);
   }
 
   @Test(expected = IllegalStateException.class)
   public void testCantAccessMapIfNotStarted() {
-    new HeapStorageManager(new HeapKeyValueStorageFactory()).getMap("whatever!", Object.class, Object.class);
+    new HeapStorageManager(new HeapKeyValueStorageFactory()).getKeyValueStorage("whatever!", Object.class, Object.class);
   }
 
   @Test
   public void testReturnNullWhenNotAttached() throws ExecutionException, InterruptedException {
     HeapStorageManager manager = new HeapStorageManager(new HeapKeyValueStorageFactory());
     manager.start().get();
-    assertThat(manager.getMap("whatever!", Object.class, Object.class), nullValue());
+    assertThat(manager.getKeyValueStorage("whatever!", Object.class, Object.class), nullValue());
   }
 
   @Test
@@ -43,7 +43,7 @@ public class HeapStorageManagerTest {
     HeapStorageManager manager = new HeapStorageManager(new HeapKeyValueStorageFactory());
     manager.getConfiguration().mapConfig().put("foo", new KeyValueStorageConfigImpl<String, String>(String.class, String.class));
     manager.start().get();
-    assertThat(manager.getMap("foo", String.class, String.class), notNullValue());
+    assertThat(manager.getKeyValueStorage("foo", String.class, String.class), notNullValue());
   }
 
   @Test
@@ -51,10 +51,10 @@ public class HeapStorageManagerTest {
     HeapStorageManager manager = new HeapStorageManager(new HeapKeyValueStorageFactory());
     manager.getConfiguration().mapConfig().put("foo", new KeyValueStorageConfigImpl<String, String>(String.class, String.class));
     manager.start().get();
-    assertThat(manager.getMap("foo", String.class, String.class), notNullValue());
+    assertThat(manager.getKeyValueStorage("foo", String.class, String.class), notNullValue());
     manager.shutdown();
     try {
-      manager.getMap("foo", String.class, String.class);
+      manager.getKeyValueStorage("foo", String.class, String.class);
       fail();
     } catch (IllegalStateException e) {
       // expected!
@@ -66,15 +66,15 @@ public class HeapStorageManagerTest {
     HeapStorageManager manager = new HeapStorageManager(new HeapKeyValueStorageFactory());
     manager.getConfiguration().mapConfig().put("foo", new KeyValueStorageConfigImpl<Long, Integer>(Long.class, Integer.class));
     manager.start().get();
-    assertThat(manager.getMap("foo", Long.class, Integer.class), notNullValue());
+    assertThat(manager.getKeyValueStorage("foo", Long.class, Integer.class), notNullValue());
     try {
-      assertThat(manager.getMap("foo", Number.class, Number.class), notNullValue());
+      assertThat(manager.getKeyValueStorage("foo", Number.class, Number.class), notNullValue());
       fail();
     } catch (IllegalArgumentException e) {
       // expected!
     }
     try {
-      manager.getMap("foo", Integer.class, Long.class);
+      manager.getKeyValueStorage("foo", Integer.class, Long.class);
       fail();
     } catch (IllegalArgumentException e) {
       // expected!
@@ -99,7 +99,7 @@ public class HeapStorageManagerTest {
     });
     manager.getConfiguration().mapConfig().put("foo", config);
     manager.start().get();
-    final KeyValueStorage<Long, Integer> map = manager.getMap("foo", Long.class, Integer.class);
+    final KeyValueStorage<Long, Integer> map = manager.getKeyValueStorage("foo", Long.class, Integer.class);
     assertThat(map, notNullValue());
     assertThat(invoked.get(), is(false));
     map.put(1L, 1);

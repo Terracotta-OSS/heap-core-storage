@@ -17,7 +17,7 @@ import org.terracotta.corestorage.KeyValueStorageMutationListener;
 public class HeapKeyValueStorageFactory implements KeyValueStorageFactory {
 
   @Override
-  public <K, V> KeyValueStorage<K, V> createMap(final KeyValueStorageConfig<K, V> config, final Object ... configs) {
+  public <K, V> KeyValueStorage<K, V> create(final KeyValueStorageConfig<K, V> config, final Object ... configs) {
 
     List<? extends KeyValueStorageMutationListener<? super K, ? super V>> mutationListeners = null;
 

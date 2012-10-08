@@ -21,7 +21,7 @@ public class HeapKeyValueStorageFactoryTest {
   @Test
   public void testCreateMap() throws Exception {
     KeyValueStorageFactory factory = new HeapKeyValueStorageFactory();
-    assertThat(factory.createMap(null), IsNull.notNullValue());
+    assertThat(factory.create(null), IsNull.notNullValue());
   }
 
   @Test
@@ -40,7 +40,7 @@ public class HeapKeyValueStorageFactoryTest {
         invoked.set(true);
       }
     });
-    final KeyValueStorage<Integer,String> map = factory.createMap(mapConfig);
+    final KeyValueStorage<Integer,String> map = factory.create(mapConfig);
     assertThat(map, IsNull.notNullValue());
     assertThat(invoked.get(), is(false));
     map.put(1, "one");

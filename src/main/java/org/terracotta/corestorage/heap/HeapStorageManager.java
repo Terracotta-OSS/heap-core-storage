@@ -58,7 +58,7 @@ public class HeapStorageManager implements StorageManager {
       @Override
       public void run() {
         for (Map.Entry<String, KeyValueStorageConfig<?, ?>> mapConfigEntry : configuration.mapConfig().entrySet()) {
-          final KeyValueStorage<?, ?> map = factory.createMap(mapConfigEntry.getValue());
+          final KeyValueStorage<?, ?> map = factory.create(mapConfigEntry.getValue());
           final String mapAlias = mapConfigEntry.getKey();
           registerMap(mapAlias, map, mapConfigEntry.getValue().getKeyClass(), mapConfigEntry.getValue().getValueClass());
         }
@@ -76,17 +76,17 @@ public class HeapStorageManager implements StorageManager {
     }
   }
 
-  public <K, V> void attachMap(String alias, KeyValueStorage<K, V> map, Class<K> keyClass, Class<V> valueClass) throws IllegalStateException {
+  public <K, V> void attachKeyValueStorage(String alias, KeyValueStorage<K, V> map, Class<K> keyClass, Class<V> valueClass) throws IllegalStateException {
     checkIsStarted();
     registerMap(alias, map, keyClass, valueClass);
   }
 
-  public void detachMap(String name) {
+  public void detachKeyValueStorage(String name) {
     checkIsStarted();
     unregisterMap(name);
   }
 
-  public <K, V> KeyValueStorage<K, V> getMap(String alias, Class<K> keyClass, Class<V> valueClass) {
+  public <K, V> KeyValueStorage<K, V> getKeyValueStorage(String alias, Class<K> keyClass, Class<V> valueClass) {
     checkIsStarted();
     final MapHolder mapHolder = maps.get(alias);
     return mapHolder == null ? null : mapHolder.getMap(keyClass, valueClass);
