@@ -5,6 +5,7 @@
 package org.terracotta.corestorage.heap;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -16,6 +17,7 @@ import org.terracotta.corestorage.KeyValueStorageConfig;
 import org.terracotta.corestorage.KeyValueStorageFactory;
 import org.terracotta.corestorage.StorageManager;
 import org.terracotta.corestorage.StorageManagerConfiguration;
+import org.terracotta.corestorage.monitoring.MonitoredResource;
 
 /**
  *
@@ -114,6 +116,11 @@ public class HeapStorageManager implements StorageManager {
     if (status != Status.STARTED) {
       throw new IllegalStateException("We're " + status + " which is not started");
     }
+  }
+
+  @Override
+  public Collection<MonitoredResource> getMonitoredResources() {
+    return Collections.emptyList();
   }
 
   private static class GBManagerConfigurationDummy implements StorageManagerConfiguration {
