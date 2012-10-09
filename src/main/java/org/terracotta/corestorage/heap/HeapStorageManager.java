@@ -6,7 +6,6 @@ package org.terracotta.corestorage.heap;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -16,7 +15,6 @@ import org.terracotta.corestorage.KeyValueStorage;
 import org.terracotta.corestorage.KeyValueStorageConfig;
 import org.terracotta.corestorage.KeyValueStorageFactory;
 import org.terracotta.corestorage.StorageManager;
-import org.terracotta.corestorage.StorageManagerConfiguration;
 import org.terracotta.corestorage.monitoring.MonitoredResource;
 
 /**
@@ -33,25 +31,20 @@ public class HeapStorageManager implements StorageManager {
   // -> fail
   // -> delete
 
-  private final KeyValueStorageFactory factory;
-  private final StorageManagerConfiguration           configuration;
+  protected final KeyValueStorageFactory factory;
+  private final Map<String, KeyValueStorageConfig<?, ?>> configs;
 
   private final ConcurrentMap<String, MapHolder> maps = new ConcurrentHashMap<String, MapHolder>();
   private volatile Status status;
 
 
-  public HeapStorageManager(KeyValueStorageFactory factory) {
-    this(factory, new GBManagerConfigurationDummy());
+  public HeapStorageManager() {
+    this(Collections.<String, KeyValueStorageConfig<?, ?>>emptyMap());
   }
 
-  protected HeapStorageManager(KeyValueStorageFactory factory, StorageManagerConfiguration configuration) {
-    this.factory = factory;
-    this.configuration = configuration;
-  }
-
-  @Override
-  public StorageManagerConfiguration getConfiguration() {
-    return this.configuration;
+  public HeapStorageManager(Map<String, KeyValueStorageConfig<?, ?>> configs) {
+    this.factory = new HeapKeyValueStorageFactory();
+    this.configs = new ConcurrentHashMap<String, KeyValueStorageConfig<?, ?>>(configs);
   }
 
   @Override
@@ -59,7 +52,7 @@ public class HeapStorageManager implements StorageManager {
     final FutureTask<Void> future = new FutureTask<Void>(new Runnable() {
       @Override
       public void run() {
-        for (Map.Entry<String, KeyValueStorageConfig<?, ?>> mapConfigEntry : configuration.mapConfig().entrySet()) {
+        for (Map.Entry<String, KeyValueStorageConfig<?, ?>> mapConfigEntry : configs.entrySet()) {
           final KeyValueStorage<?, ?> map = factory.create(mapConfigEntry.getValue());
           final String mapAlias = mapConfigEntry.getKey();
           registerMap(mapAlias, map, mapConfigEntry.getValue().getKeyClass(), mapConfigEntry.getValue().getValueClass());
@@ -71,6 +64,7 @@ public class HeapStorageManager implements StorageManager {
     return future;
   }
 
+  @Override
   public void shutdown() {
     status = Status.STOPPED;
     for (String alias : maps.keySet()) {
@@ -78,26 +72,36 @@ public class HeapStorageManager implements StorageManager {
     }
   }
 
-  public <K, V> void attachKeyValueStorage(String alias, KeyValueStorage<K, V> map, Class<K> keyClass, Class<V> valueClass) throws IllegalStateException {
+  @Override
+  public <K, V> KeyValueStorage<K, V> createKeyValueStorage(String alias, KeyValueStorageConfig<K, V> config) throws IllegalStateException {
     checkIsStarted();
-    registerMap(alias, map, keyClass, valueClass);
+    KeyValueStorage<K, V> storage = factory.create(config);
+    if (maps.putIfAbsent(alias, new MapHolder(factory.create(config), config.getKeyClass(), config.getValueClass())) != null) {
+      throw new IllegalStateException("Duplicated map for alias: " + alias);
+    } else {
+      return storage;
+    }
   }
 
-  public void detachKeyValueStorage(String name) {
+  @Override
+  public void destroyKeyValueStorage(String name) {
     checkIsStarted();
     unregisterMap(name);
   }
 
+  @Override
   public <K, V> KeyValueStorage<K, V> getKeyValueStorage(String alias, Class<K> keyClass, Class<V> valueClass) {
     checkIsStarted();
     final MapHolder mapHolder = maps.get(alias);
     return mapHolder == null ? null : mapHolder.getMap(keyClass, valueClass);
   }
 
+  @Override
   public void begin() {
     checkIsStarted();
   }
 
+  @Override
   public void commit() {
     checkIsStarted();
   }
@@ -121,21 +125,6 @@ public class HeapStorageManager implements StorageManager {
   @Override
   public Collection<MonitoredResource> getMonitoredResources() {
     return Collections.emptyList();
-  }
-
-  private static class GBManagerConfigurationDummy implements StorageManagerConfiguration {
-
-    private final HashMap<String, KeyValueStorageConfig<?, ?>> stringGBMapConfigHashMap = new HashMap<String, KeyValueStorageConfig<?, ?>>();
-
-    @Override
-    public Collection<Object> sharedConfig() {
-      throw new UnsupportedOperationException("Implement me!");
-    }
-
-    @Override
-    public Map<String, KeyValueStorageConfig<?, ?>> mapConfig() {
-      return stringGBMapConfigHashMap;
-    }
   }
 
   private static enum Status {INITIALIZED, STARTED, STOPPED}

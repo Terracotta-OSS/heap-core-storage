@@ -1,5 +1,6 @@
 package org.terracotta.corestorage.heap;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -22,34 +23,32 @@ import static org.junit.Assert.fail;
 public class HeapStorageManagerTest {
 
   @Test(expected = IllegalStateException.class)
-  public void testCantAttachMapIfNotStarted() {
-    new HeapStorageManager(new HeapKeyValueStorageFactory()).attachKeyValueStorage("whatever!", new HeapKeyValueStorage<Object, Object>(), Object.class, Object.class);
+  public void testCantCreateMapIfNotStarted() {
+    new HeapStorageManager().createKeyValueStorage("whatever!", new KeyValueStorageConfigImpl<Object, Object>(Object.class, Object.class));
   }
 
   @Test(expected = IllegalStateException.class)
   public void testCantAccessMapIfNotStarted() {
-    new HeapStorageManager(new HeapKeyValueStorageFactory()).getKeyValueStorage("whatever!", Object.class, Object.class);
+    new HeapStorageManager().getKeyValueStorage("whatever!", Object.class, Object.class);
   }
 
   @Test
   public void testReturnNullWhenNotAttached() throws ExecutionException, InterruptedException {
-    HeapStorageManager manager = new HeapStorageManager(new HeapKeyValueStorageFactory());
+    HeapStorageManager manager = new HeapStorageManager();
     manager.start().get();
     assertThat(manager.getKeyValueStorage("whatever!", Object.class, Object.class), nullValue());
   }
 
   @Test
   public void testReturnsMapWhenConfigured() throws ExecutionException, InterruptedException {
-    HeapStorageManager manager = new HeapStorageManager(new HeapKeyValueStorageFactory());
-    manager.getConfiguration().mapConfig().put("foo", new KeyValueStorageConfigImpl<String, String>(String.class, String.class));
+    HeapStorageManager manager = new HeapStorageManager(Collections.<String, KeyValueStorageConfig<?, ?>>singletonMap("foo", new KeyValueStorageConfigImpl<String, String>(String.class, String.class)));
     manager.start().get();
     assertThat(manager.getKeyValueStorage("foo", String.class, String.class), notNullValue());
   }
 
   @Test
   public void testThrowsWhenStopped() throws ExecutionException, InterruptedException {
-    HeapStorageManager manager = new HeapStorageManager(new HeapKeyValueStorageFactory());
-    manager.getConfiguration().mapConfig().put("foo", new KeyValueStorageConfigImpl<String, String>(String.class, String.class));
+    HeapStorageManager manager = new HeapStorageManager(Collections.<String, KeyValueStorageConfig<?, ?>>singletonMap("foo", new KeyValueStorageConfigImpl<String, String>(String.class, String.class)));
     manager.start().get();
     assertThat(manager.getKeyValueStorage("foo", String.class, String.class), notNullValue());
     manager.shutdown();
@@ -63,8 +62,7 @@ public class HeapStorageManagerTest {
 
   @Test
   public void testThrowsWhenTypeNotAssignable() throws ExecutionException, InterruptedException {
-    HeapStorageManager manager = new HeapStorageManager(new HeapKeyValueStorageFactory());
-    manager.getConfiguration().mapConfig().put("foo", new KeyValueStorageConfigImpl<Long, Integer>(Long.class, Integer.class));
+    HeapStorageManager manager = new HeapStorageManager(Collections.<String, KeyValueStorageConfig<?, ?>>singletonMap("foo", new KeyValueStorageConfigImpl<Long, Integer>(Long.class, Integer.class)));
     manager.start().get();
     assertThat(manager.getKeyValueStorage("foo", Long.class, Integer.class), notNullValue());
     try {
@@ -83,7 +81,6 @@ public class HeapStorageManagerTest {
 
   @Test
   public void testMutationsListenersGetWiredFromConfig() throws ExecutionException, InterruptedException {
-    HeapStorageManager manager = new HeapStorageManager(new HeapKeyValueStorageFactory());
     final AtomicBoolean invoked = new AtomicBoolean();
     final KeyValueStorageConfig<Long, Integer> config = new KeyValueStorageConfigImpl<Long, Integer>(Long.class, Integer.class);
     config.addListener(new KeyValueStorageMutationListener<Long, Integer>() {
@@ -97,7 +94,7 @@ public class HeapStorageManagerTest {
         invoked.set(true);
       }
     });
-    manager.getConfiguration().mapConfig().put("foo", config);
+    HeapStorageManager manager = new HeapStorageManager(Collections.<String, KeyValueStorageConfig<?, ?>>singletonMap("foo", config));
     manager.start().get();
     final KeyValueStorage<Long, Integer> map = manager.getKeyValueStorage("foo", Long.class, Integer.class);
     assertThat(map, notNullValue());
