@@ -1,6 +1,5 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * All content copyright Terracotta, Inc., unless otherwise indicated. All rights reserved.
  */
 package org.terracotta.corestorage.heap;
 
@@ -17,10 +16,6 @@ import org.terracotta.corestorage.KeyValueStorageFactory;
 import org.terracotta.corestorage.StorageManager;
 import org.terracotta.corestorage.monitoring.MonitoredResource;
 
-/**
- *
- * @author cdennis
- */
 public class HeapStorageManager implements StorageManager {
 
   // no data

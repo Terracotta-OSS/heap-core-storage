@@ -1,6 +1,5 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * All content copyright Terracotta, Inc., unless otherwise indicated. All rights reserved.
  */
 package org.terracotta.corestorage.heap;
 
@@ -11,10 +10,6 @@ import org.terracotta.corestorage.Serializer;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- *
- * @author cdennis
- */
 public class KeyValueStorageConfigImpl<K, V> implements KeyValueStorageConfig<K, V> {
 
   private final Class<K> keyClass;

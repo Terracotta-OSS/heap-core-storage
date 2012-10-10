@@ -1,6 +1,5 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * All content copyright Terracotta, Inc., unless otherwise indicated. All rights reserved.
  */
 package org.terracotta.corestorage.heap;
 
@@ -19,10 +18,6 @@ import org.terracotta.corestorage.KeyValueStorageMutationListener;
 import org.terracotta.corestorage.Retriever;
 
 
-/**
- *
- * @author cdennis
- */
 public class HeapKeyValueStorage<K, V> implements KeyValueStorage<K, V> {
 
   private final ConcurrentMap<K, V> store = new ConcurrentHashMap<K, V>();

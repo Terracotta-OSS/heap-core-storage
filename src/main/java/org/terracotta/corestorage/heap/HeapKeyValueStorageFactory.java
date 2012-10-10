@@ -1,6 +1,5 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * All content copyright Terracotta, Inc., unless otherwise indicated. All rights reserved.
  */
 package org.terracotta.corestorage.heap;
 
@@ -40,6 +39,11 @@ public class HeapKeyValueStorageFactory implements KeyValueStorageFactory {
 
     private final Runtime runtime = Runtime.getRuntime();
     
+    @Override
+    public Type getType() {
+      return Type.HEAP;
+    }
+
     @Override
     public long getUsed() {
       long total;
