@@ -31,7 +31,7 @@ public class HeapStorageManager implements StorageManager {
   // -> fail
   // -> delete
 
-  protected final KeyValueStorageFactory factory;
+  private final HeapKeyValueStorageFactory factory;
   private final Map<String, KeyValueStorageConfig<?, ?>> configs;
 
   private final ConcurrentMap<String, MapHolder> maps = new ConcurrentHashMap<String, MapHolder>();
@@ -124,7 +124,7 @@ public class HeapStorageManager implements StorageManager {
 
   @Override
   public Collection<MonitoredResource> getMonitoredResources() {
-    return Collections.emptyList();
+    return Collections.singleton(factory.getHeapResource());
   }
 
   private static enum Status {INITIALIZED, STARTED, STOPPED}
@@ -148,5 +148,4 @@ public class HeapStorageManager implements StorageManager {
       return map;
     }
   }
-
 }

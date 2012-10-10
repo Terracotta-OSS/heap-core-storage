@@ -5,10 +5,12 @@
 package org.terracotta.corestorage.heap;
 
 import java.util.List;
+import java.util.concurrent.Callable;
 import org.terracotta.corestorage.KeyValueStorage;
 import org.terracotta.corestorage.KeyValueStorageConfig;
 import org.terracotta.corestorage.KeyValueStorageFactory;
 import org.terracotta.corestorage.KeyValueStorageMutationListener;
+import org.terracotta.corestorage.monitoring.MonitoredResource;
 
 /**
  *
@@ -16,6 +18,8 @@ import org.terracotta.corestorage.KeyValueStorageMutationListener;
  */
 public class HeapKeyValueStorageFactory implements KeyValueStorageFactory {
 
+  private final HeapMonitoredResource resource = new HeapMonitoredResource();
+  
   @Override
   public <K, V> KeyValueStorage<K, V> create(final KeyValueStorageConfig<K, V> config, final Object ... configs) {
 
@@ -26,5 +30,50 @@ public class HeapKeyValueStorageFactory implements KeyValueStorageFactory {
     }
 
     return new HeapKeyValueStorage<K, V>(mutationListeners);
+  }
+  
+  public MonitoredResource getHeapResource() {
+    return resource;
+  }
+
+  static class HeapMonitoredResource implements MonitoredResource {
+
+    private final Runtime runtime = Runtime.getRuntime();
+    
+    @Override
+    public long getUsed() {
+      long total;
+      long free;
+      do {
+        total = runtime.totalMemory();
+        free = runtime.freeMemory();
+      } while (total == runtime.totalMemory());
+      return total - free;
+    }
+
+    @Override
+    public long getReserved() {
+      return runtime.totalMemory();
+    }
+
+    @Override
+    public long getTotal() {
+      return runtime.maxMemory();
+    }
+
+    @Override
+    public void addUsedThreshold(long value, Callable<?> action) {
+      throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void addReservedThreshold(long value, Callable<?> action) {
+      throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void removeThreshold(Callable<?> action) throws IllegalArgumentException {
+      throw new UnsupportedOperationException("Not supported yet.");
+    }
   }
 }

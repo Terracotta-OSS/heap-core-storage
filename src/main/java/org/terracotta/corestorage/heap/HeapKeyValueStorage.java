@@ -104,8 +104,12 @@ public class HeapKeyValueStorage<K, V> implements KeyValueStorage<K, V> {
     lock.lock();
     try {
       final V previous = store.remove(key);
-      notifyRemove(key, previous);
-      return previous != null;
+      if (previous != null) {
+        notifyRemove(key, previous);
+        return true;
+      } else {
+        return false;
+      }
     } finally {
       lock.unlock();
     }
