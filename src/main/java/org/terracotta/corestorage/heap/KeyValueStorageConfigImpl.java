@@ -4,11 +4,12 @@
  */
 package org.terracotta.corestorage.heap;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.terracotta.corestorage.KeyValueStorageConfig;
 import org.terracotta.corestorage.KeyValueStorageMutationListener;
 import org.terracotta.corestorage.Serializer;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -19,6 +20,8 @@ public class KeyValueStorageConfigImpl<K, V> implements KeyValueStorageConfig<K,
   private final Class<K> keyClass;
   private final Class<V> valueClass;
   private final List<KeyValueStorageMutationListener<? super K, ? super V>> mutationListeners = new ArrayList<KeyValueStorageMutationListener<? super K, ? super V>>();
+  private Serializer<K> keySerializer;
+  private Serializer<V> valueSerializer;
 
   public KeyValueStorageConfigImpl(final Class<K> keyClass, final Class<V> valueClass) {
     this.keyClass = keyClass;
@@ -47,21 +50,21 @@ public class KeyValueStorageConfigImpl<K, V> implements KeyValueStorageConfig<K,
 
   @Override
   public void setKeySerializer(Serializer<K> serializer) {
-    //no-op
+    keySerializer = serializer;
   }
 
   @Override
   public void setValueSerializer(Serializer<V> serializer) {
-    //no-op
+    valueSerializer = serializer;
   }
 
   @Override
   public Serializer<K> getKeySerializer() {
-    throw new UnsupportedOperationException();
+    return keySerializer;
   }
 
   @Override
   public Serializer<V> getValueSerializer() {
-    throw new UnsupportedOperationException();
+    return valueSerializer;
   }
 }
