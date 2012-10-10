@@ -15,8 +15,8 @@ public class KeyValueStorageConfigImpl<K, V> implements KeyValueStorageConfig<K,
   private final Class<K> keyClass;
   private final Class<V> valueClass;
   private final List<KeyValueStorageMutationListener<? super K, ? super V>> mutationListeners = new ArrayList<KeyValueStorageMutationListener<? super K, ? super V>>();
-  private Serializer<K> keySerializer;
-  private Serializer<V> valueSerializer;
+  private Serializer<? super K> keySerializer;
+  private Serializer<? super V> valueSerializer;
 
   public KeyValueStorageConfigImpl(final Class<K> keyClass, final Class<V> valueClass) {
     this.keyClass = keyClass;
@@ -44,22 +44,22 @@ public class KeyValueStorageConfigImpl<K, V> implements KeyValueStorageConfig<K,
   }
 
   @Override
-  public void setKeySerializer(Serializer<K> serializer) {
+  public void setKeySerializer(Serializer<? super K> serializer) {
     keySerializer = serializer;
   }
 
   @Override
-  public void setValueSerializer(Serializer<V> serializer) {
+  public void setValueSerializer(Serializer<? super V> serializer) {
     valueSerializer = serializer;
   }
 
   @Override
-  public Serializer<K> getKeySerializer() {
+  public Serializer<? super K> getKeySerializer() {
     return keySerializer;
   }
 
   @Override
-  public Serializer<V> getValueSerializer() {
+  public Serializer<? super V> getValueSerializer() {
     return valueSerializer;
   }
 }
