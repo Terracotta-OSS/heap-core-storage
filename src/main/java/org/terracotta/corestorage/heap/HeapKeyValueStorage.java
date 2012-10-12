@@ -3,6 +3,10 @@
  */
 package org.terracotta.corestorage.heap;
 
+import org.terracotta.corestorage.KeyValueStorage;
+import org.terracotta.corestorage.KeyValueStorageMutationListener;
+import org.terracotta.corestorage.Retriever;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -13,9 +17,6 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-import org.terracotta.corestorage.KeyValueStorage;
-import org.terracotta.corestorage.KeyValueStorageMutationListener;
-import org.terracotta.corestorage.Retriever;
 
 
 public class HeapKeyValueStorage<K, V> implements KeyValueStorage<K, V> {
@@ -157,6 +158,30 @@ public class HeapKeyValueStorage<K, V> implements KeyValueStorage<K, V> {
   @Override
   public void clear() {
     store.clear();
+  }
+
+  @Override
+  public boolean equals(final Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+
+    final HeapKeyValueStorage that = (HeapKeyValueStorage)o;
+
+    if (segmentMask != that.segmentMask) return false;
+    if (segmentShift != that.segmentShift) return false;
+    if (!mutationListeners.equals(that.mutationListeners)) return false;
+    if (!store.equals(that.store)) return false;
+
+    return true;
+  }
+
+  @Override
+  public int hashCode() {
+    int result = store.hashCode();
+    result = 31 * result + segmentShift;
+    result = 31 * result + segmentMask;
+    result = 31 * result + mutationListeners.hashCode();
+    return result;
   }
 }
 class HeapRetriever<T> implements Retriever<T> {
