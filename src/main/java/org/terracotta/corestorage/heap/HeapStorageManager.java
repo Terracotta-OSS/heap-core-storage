@@ -3,6 +3,11 @@
  */
 package org.terracotta.corestorage.heap;
 
+import org.terracotta.corestorage.KeyValueStorage;
+import org.terracotta.corestorage.KeyValueStorageConfig;
+import org.terracotta.corestorage.StorageManager;
+import org.terracotta.corestorage.monitoring.MonitoredResource;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
@@ -10,11 +15,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
-import org.terracotta.corestorage.KeyValueStorage;
-import org.terracotta.corestorage.KeyValueStorageConfig;
-import org.terracotta.corestorage.KeyValueStorageFactory;
-import org.terracotta.corestorage.StorageManager;
-import org.terracotta.corestorage.monitoring.MonitoredResource;
 
 public class HeapStorageManager implements StorageManager {
 
@@ -71,7 +71,7 @@ public class HeapStorageManager implements StorageManager {
   public <K, V> KeyValueStorage<K, V> createKeyValueStorage(String alias, KeyValueStorageConfig<K, V> config) throws IllegalStateException {
     checkIsStarted();
     KeyValueStorage<K, V> storage = factory.create(config);
-    if (maps.putIfAbsent(alias, new MapHolder(factory.create(config), config.getKeyClass(), config.getValueClass())) != null) {
+    if (maps.putIfAbsent(alias, new MapHolder(storage, config.getKeyClass(), config.getValueClass())) != null) {
       throw new IllegalStateException("Duplicated map for alias: " + alias);
     } else {
       return storage;

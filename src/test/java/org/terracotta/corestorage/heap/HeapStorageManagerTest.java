@@ -1,19 +1,20 @@
 package org.terracotta.corestorage.heap;
 
-import java.util.Collections;
-import java.util.Map;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.atomic.AtomicBoolean;
-
 import org.junit.Test;
 import org.terracotta.corestorage.KeyValueStorage;
 import org.terracotta.corestorage.KeyValueStorageConfig;
 import org.terracotta.corestorage.KeyValueStorageMutationListener;
 import org.terracotta.corestorage.Retriever;
 
+import java.util.Collections;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
@@ -101,5 +102,13 @@ public class HeapStorageManagerTest {
     assertThat(invoked.get(), is(false));
     map.put(1L, 1);
     assertThat(invoked.get(), is(true));
+  }
+
+  @Test
+  public void testGetKeyValueStorage() throws Exception {
+    HeapStorageManager manager = new HeapStorageManager();
+    manager.start().get();
+    KeyValueStorage<Object, Object> map = manager.createKeyValueStorage("foo", new KeyValueStorageConfigImpl<Object, Object>(Object.class, Object.class));
+    assertThat(manager.getKeyValueStorage("foo", Object.class, Object.class), sameInstance(map));
   }
 }
