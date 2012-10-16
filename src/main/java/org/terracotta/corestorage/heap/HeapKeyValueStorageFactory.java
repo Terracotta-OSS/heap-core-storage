@@ -11,16 +11,12 @@ import org.terracotta.corestorage.KeyValueStorageFactory;
 import org.terracotta.corestorage.KeyValueStorageMutationListener;
 import org.terracotta.corestorage.monitoring.MonitoredResource;
 
-/**
- *
- * @author cdennis
- */
 public class HeapKeyValueStorageFactory implements KeyValueStorageFactory {
 
   private final HeapMonitoredResource resource = new HeapMonitoredResource();
   
   @Override
-  public <K, V> KeyValueStorage<K, V> create(final KeyValueStorageConfig<K, V> config, final Object ... configs) {
+  public <K, V> KeyValueStorage<K, V> create(final KeyValueStorageConfig<K, V> config) {
 
     List<? extends KeyValueStorageMutationListener<? super K, ? super V>> mutationListeners = null;
 

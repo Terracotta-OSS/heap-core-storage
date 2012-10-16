@@ -1,10 +1,15 @@
+/*
+ * All content copyright Terracotta, Inc., unless otherwise indicated. All rights reserved.
+ */
 package org.terracotta.corestorage.heap;
 
+import java.util.Collections;
 import org.hamcrest.core.IsNull;
 import org.junit.Test;
 
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
+import org.terracotta.corestorage.ImmutableKeyValueStorageConfig;
 import org.terracotta.corestorage.KeyValueStorage;
 import org.terracotta.corestorage.KeyValueStorageConfig;
 import org.terracotta.corestorage.KeyValueStorageFactory;
@@ -28,8 +33,8 @@ public class HeapKeyValueStorageFactoryTest {
   public void testUsesRegisteredMutationListeners() {
     final AtomicBoolean invoked = new AtomicBoolean();
     KeyValueStorageFactory factory = new HeapKeyValueStorageFactory();
-    final KeyValueStorageConfig<Integer, String> mapConfig = new KeyValueStorageConfigImpl<Integer, String>(Integer.class, String.class);
-    mapConfig.addListener(new KeyValueStorageMutationListener<Integer, String>() {
+    final KeyValueStorageConfig<Integer, String> mapConfig = new ImmutableKeyValueStorageConfig<Integer, String>(Integer.class, String.class,
+            Collections.<KeyValueStorageMutationListener<? super Integer, ? super String>>singletonList(new KeyValueStorageMutationListener<Integer, String>() {
       @Override
       public void removed(final Retriever<? extends Integer> key, final Retriever<? extends String> value, final Map<? extends Enum, Object> metadata) {
         invoked.set(true);
@@ -39,7 +44,7 @@ public class HeapKeyValueStorageFactoryTest {
       public void added(final Retriever<? extends Integer> key, final Retriever<? extends String> value, final Map<? extends Enum, Object> metadata) {
         invoked.set(true);
       }
-    });
+    }));
     final KeyValueStorage<Integer,String> map = factory.create(mapConfig);
     assertThat(map, IsNull.notNullValue());
     assertThat(invoked.get(), is(false));

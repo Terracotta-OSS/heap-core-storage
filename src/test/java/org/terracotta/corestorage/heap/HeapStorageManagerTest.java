@@ -1,6 +1,10 @@
+/*
+ * All content copyright Terracotta, Inc., unless otherwise indicated. All rights reserved.
+ */
 package org.terracotta.corestorage.heap;
 
 import org.junit.Test;
+import org.terracotta.corestorage.ImmutableKeyValueStorageConfig;
 import org.terracotta.corestorage.KeyValueStorage;
 import org.terracotta.corestorage.KeyValueStorageConfig;
 import org.terracotta.corestorage.KeyValueStorageMutationListener;
@@ -25,7 +29,7 @@ public class HeapStorageManagerTest {
 
   @Test(expected = IllegalStateException.class)
   public void testCantCreateMapIfNotStarted() {
-    new HeapStorageManager().createKeyValueStorage("whatever!", new KeyValueStorageConfigImpl<Object, Object>(Object.class, Object.class));
+    new HeapStorageManager().createKeyValueStorage("whatever!", new ImmutableKeyValueStorageConfig<Object, Object>(Object.class, Object.class));
   }
 
   @Test(expected = IllegalStateException.class)
@@ -42,14 +46,14 @@ public class HeapStorageManagerTest {
 
   @Test
   public void testReturnsMapWhenConfigured() throws ExecutionException, InterruptedException {
-    HeapStorageManager manager = new HeapStorageManager(Collections.<String, KeyValueStorageConfig<?, ?>>singletonMap("foo", new KeyValueStorageConfigImpl<String, String>(String.class, String.class)));
+    HeapStorageManager manager = new HeapStorageManager(Collections.<String, KeyValueStorageConfig<?, ?>>singletonMap("foo", new ImmutableKeyValueStorageConfig<String, String>(String.class, String.class)));
     manager.start().get();
     assertThat(manager.getKeyValueStorage("foo", String.class, String.class), notNullValue());
   }
 
   @Test
   public void testThrowsWhenStopped() throws ExecutionException, InterruptedException {
-    HeapStorageManager manager = new HeapStorageManager(Collections.<String, KeyValueStorageConfig<?, ?>>singletonMap("foo", new KeyValueStorageConfigImpl<String, String>(String.class, String.class)));
+    HeapStorageManager manager = new HeapStorageManager(Collections.<String, KeyValueStorageConfig<?, ?>>singletonMap("foo", new ImmutableKeyValueStorageConfig<String, String>(String.class, String.class)));
     manager.start().get();
     assertThat(manager.getKeyValueStorage("foo", String.class, String.class), notNullValue());
     manager.shutdown();
@@ -63,7 +67,7 @@ public class HeapStorageManagerTest {
 
   @Test
   public void testThrowsWhenTypeNotAssignable() throws ExecutionException, InterruptedException {
-    HeapStorageManager manager = new HeapStorageManager(Collections.<String, KeyValueStorageConfig<?, ?>>singletonMap("foo", new KeyValueStorageConfigImpl<Long, Integer>(Long.class, Integer.class)));
+    HeapStorageManager manager = new HeapStorageManager(Collections.<String, KeyValueStorageConfig<?, ?>>singletonMap("foo", new ImmutableKeyValueStorageConfig<Long, Integer>(Long.class, Integer.class)));
     manager.start().get();
     assertThat(manager.getKeyValueStorage("foo", Long.class, Integer.class), notNullValue());
     try {
@@ -83,8 +87,8 @@ public class HeapStorageManagerTest {
   @Test
   public void testMutationsListenersGetWiredFromConfig() throws ExecutionException, InterruptedException {
     final AtomicBoolean invoked = new AtomicBoolean();
-    final KeyValueStorageConfig<Long, Integer> config = new KeyValueStorageConfigImpl<Long, Integer>(Long.class, Integer.class);
-    config.addListener(new KeyValueStorageMutationListener<Long, Integer>() {
+    final KeyValueStorageConfig<Long, Integer> config = new ImmutableKeyValueStorageConfig<Long, Integer>(Long.class, Integer.class,
+            Collections.<KeyValueStorageMutationListener<? super Long, ? super Integer>>singletonList(new KeyValueStorageMutationListener<Long, Integer>() {
       @Override
       public void removed(final Retriever<? extends Long> key, final Retriever<? extends Integer> value, final Map<? extends Enum, Object> metadata) {
         invoked.set(true);
@@ -94,7 +98,7 @@ public class HeapStorageManagerTest {
       public void added(final Retriever<? extends Long> key, final Retriever<? extends Integer> value, final Map<? extends Enum, Object> metadata) {
         invoked.set(true);
       }
-    });
+    }));
     HeapStorageManager manager = new HeapStorageManager(Collections.<String, KeyValueStorageConfig<?, ?>>singletonMap("foo", config));
     manager.start().get();
     final KeyValueStorage<Long, Integer> map = manager.getKeyValueStorage("foo", Long.class, Integer.class);
@@ -108,7 +112,7 @@ public class HeapStorageManagerTest {
   public void testGetKeyValueStorage() throws Exception {
     HeapStorageManager manager = new HeapStorageManager();
     manager.start().get();
-    KeyValueStorage<Object, Object> map = manager.createKeyValueStorage("foo", new KeyValueStorageConfigImpl<Object, Object>(Object.class, Object.class));
+    KeyValueStorage<Object, Object> map = manager.createKeyValueStorage("foo", new ImmutableKeyValueStorageConfig<Object, Object>(Object.class, Object.class));
     assertThat(manager.getKeyValueStorage("foo", Object.class, Object.class), sameInstance(map));
   }
 }
