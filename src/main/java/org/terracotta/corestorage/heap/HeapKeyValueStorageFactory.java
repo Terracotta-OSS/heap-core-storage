@@ -47,7 +47,7 @@ public class HeapKeyValueStorageFactory implements KeyValueStorageFactory {
       do {
         total = runtime.totalMemory();
         free = runtime.freeMemory();
-      } while (total == runtime.totalMemory());
+      } while (total != runtime.totalMemory());
       return total - free;
     }
 
