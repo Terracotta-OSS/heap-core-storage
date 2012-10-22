@@ -6,8 +6,6 @@ package org.terracotta.corestorage.heap;
 import org.junit.Test;
 
 import java.util.Collections;
-import java.util.List;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 import org.terracotta.corestorage.KeyValueStorage;
 import org.terracotta.corestorage.KeyValueStorageMutationListener;
@@ -61,14 +59,14 @@ public class HeapKeyValueStorageTest {
     final AtomicLong removed = new AtomicLong();
 
     @Override
-    public void removed(final Retriever<? extends K> key, final Retriever<? extends V> value, final Map<? extends Enum, Object> metadata) {
+    public void removed(final Retriever<? extends K> key, final Retriever<? extends V> value) {
       if (value.retrieve() != null) {
         removed.incrementAndGet();
       }
     }
 
     @Override
-    public void added(final Retriever<? extends K> key, final Retriever<? extends V> value, final Map<? extends Enum, Object> metadata) {
+    public void added(final Retriever<? extends K> key, final Retriever<? extends V> value, final byte metadata) {
       added.incrementAndGet();
     }
   }

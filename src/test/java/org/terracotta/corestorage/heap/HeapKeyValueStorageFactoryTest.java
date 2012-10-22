@@ -7,7 +7,6 @@ import java.util.Collections;
 import org.hamcrest.core.IsNull;
 import org.junit.Test;
 
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.terracotta.corestorage.ImmutableKeyValueStorageConfig;
 import org.terracotta.corestorage.KeyValueStorage;
@@ -36,12 +35,12 @@ public class HeapKeyValueStorageFactoryTest {
     final KeyValueStorageConfig<Integer, String> mapConfig = new ImmutableKeyValueStorageConfig<Integer, String>(Integer.class, String.class,
             Collections.<KeyValueStorageMutationListener<? super Integer, ? super String>>singletonList(new KeyValueStorageMutationListener<Integer, String>() {
       @Override
-      public void removed(final Retriever<? extends Integer> key, final Retriever<? extends String> value, final Map<? extends Enum, Object> metadata) {
+      public void removed(final Retriever<? extends Integer> key, final Retriever<? extends String> value) {
         invoked.set(true);
       }
 
       @Override
-      public void added(final Retriever<? extends Integer> key, final Retriever<? extends String> value, final Map<? extends Enum, Object> metadata) {
+      public void added(final Retriever<? extends Integer> key, final Retriever<? extends String> value, final byte metadata) {
         invoked.set(true);
       }
     }));

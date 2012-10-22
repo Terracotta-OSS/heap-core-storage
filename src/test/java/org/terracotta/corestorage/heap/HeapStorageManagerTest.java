@@ -90,12 +90,12 @@ public class HeapStorageManagerTest {
     final KeyValueStorageConfig<Long, Integer> config = new ImmutableKeyValueStorageConfig<Long, Integer>(Long.class, Integer.class,
             Collections.<KeyValueStorageMutationListener<? super Long, ? super Integer>>singletonList(new KeyValueStorageMutationListener<Long, Integer>() {
       @Override
-      public void removed(final Retriever<? extends Long> key, final Retriever<? extends Integer> value, final Map<? extends Enum, Object> metadata) {
+      public void removed(final Retriever<? extends Long> key, final Retriever<? extends Integer> value) {
         invoked.set(true);
       }
 
       @Override
-      public void added(final Retriever<? extends Long> key, final Retriever<? extends Integer> value, final Map<? extends Enum, Object> metadata) {
+      public void added(final Retriever<? extends Long> key, final Retriever<? extends Integer> value, final byte metadata) {
         invoked.set(true);
       }
     }));

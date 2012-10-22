@@ -73,16 +73,20 @@ public class HeapKeyValueStorage<K, V> implements KeyValueStorage<K, V> {
 
   @Override
   public void put(final K key, final V value) {
+    put(key, value, (byte) 0);
+  }
+
+  public void put(final K key, final V value, byte metadata) {
     final Lock lock = getLockFor(key.hashCode()).writeLock();
     lock.lock();
     try {
       store.put(key, value);
-      notifyAdd(key, value);
+      notifyAdd(key, value, metadata);
     } finally {
       lock.unlock();
     }
   }
-
+  
   @Override
   public V get(final K key) {
     final Lock lock = getLockFor(key.hashCode()).readLock();
@@ -129,15 +133,15 @@ public class HeapKeyValueStorage<K, V> implements KeyValueStorage<K, V> {
     }
   }
 
-  private void notifyAdd(final K key, final V value) {
+  private void notifyAdd(final K key, final V value, byte metadata) {
     for (KeyValueStorageMutationListener<? super K, ? super V> mutationListener : mutationListeners) {
-      mutationListener.added(new HeapRetriever<K>(key), new HeapRetriever<V>(value), Collections.<Enum, Object>emptyMap());
+      mutationListener.added(new HeapRetriever<K>(key), new HeapRetriever<V>(value), metadata);
     }
   }
 
   private void notifyRemove(final K key, final V value) {
     for (KeyValueStorageMutationListener<? super K, ? super V> mutationListener : mutationListeners) {
-      mutationListener.removed(new HeapRetriever<K>(key), new HeapRetriever<V>(value), Collections.<Enum, Object>emptyMap());
+      mutationListener.removed(new HeapRetriever<K>(key), new HeapRetriever<V>(value));
     }
   }
 
