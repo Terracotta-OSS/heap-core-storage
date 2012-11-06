@@ -53,7 +53,7 @@ public class HeapKeyValueStorageFactory implements KeyValueStorageFactory {
 
     @Override
     public long getReserved() {
-      return runtime.totalMemory();
+      return getUsed();
     }
 
     @Override
