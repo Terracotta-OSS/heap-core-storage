@@ -62,18 +62,24 @@ public class HeapKeyValueStorageFactory implements KeyValueStorageFactory {
     }
 
     @Override
-    public void addUsedThreshold(long value, Callable<?> action) {
-      throw new UnsupportedOperationException("Not supported yet.");
+    public Runnable addUsedThreshold(Direction direction, long value, Runnable action) {
+      throw new UnsupportedOperationException();
     }
 
     @Override
-    public void addReservedThreshold(long value, Callable<?> action) {
-      throw new UnsupportedOperationException("Not supported yet.");
+    public Runnable removeUsedThreshold(Direction direction, long value) {
+      return null;
     }
 
     @Override
-    public void removeThreshold(Callable<?> action) throws IllegalArgumentException {
-      throw new UnsupportedOperationException("Not supported yet.");
+    public Runnable addReservedThreshold(Direction direction, long value, Runnable action) {
+      throw new UnsupportedOperationException();
     }
+
+    @Override
+    public Runnable removeReservedThreshold(Direction direction, long value) {
+      return null;
+    }
+
   }
 }
