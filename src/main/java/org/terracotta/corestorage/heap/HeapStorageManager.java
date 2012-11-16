@@ -26,7 +26,8 @@ public class HeapStorageManager implements StorageManager {
   // -> fail
   // -> delete
 
-  private final HeapKeyValueStorageFactory factory;
+  private final HeapKeyValueStorageFactory factory = new HeapKeyValueStorageFactory();
+  private final Map<String, String> storageProperties = new ConcurrentHashMap<String, String>();
   private final Map<String, KeyValueStorageConfig<?, ?>> configs;
 
   private final ConcurrentMap<String, MapHolder> maps = new ConcurrentHashMap<String, MapHolder>();
@@ -38,8 +39,12 @@ public class HeapStorageManager implements StorageManager {
   }
 
   public HeapStorageManager(Map<String, KeyValueStorageConfig<?, ?>> configs) {
-    this.factory = new HeapKeyValueStorageFactory();
     this.configs = new ConcurrentHashMap<String, KeyValueStorageConfig<?, ?>>(configs);
+  }
+
+  @Override
+  public Map<String, String> getProperties() {
+    return storageProperties;
   }
 
   @Override
