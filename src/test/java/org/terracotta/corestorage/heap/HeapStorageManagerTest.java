@@ -57,7 +57,7 @@ public class HeapStorageManagerTest {
     HeapStorageManager manager = new HeapStorageManager(Collections.<String, KeyValueStorageConfig<?, ?>>singletonMap("foo", builder(String.class, String.class).build()));
     manager.start().get();
     assertThat(manager.getKeyValueStorage("foo", String.class, String.class), notNullValue());
-    manager.shutdown();
+    manager.close();
     try {
       manager.getKeyValueStorage("foo", String.class, String.class);
       fail();

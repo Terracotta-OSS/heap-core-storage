@@ -65,7 +65,7 @@ public class HeapStorageManager implements StorageManager {
   }
 
   @Override
-  public void shutdown() {
+  public void close() {
     status = Status.STOPPED;
     for (String alias : maps.keySet()) {
       unregisterMap(alias);
