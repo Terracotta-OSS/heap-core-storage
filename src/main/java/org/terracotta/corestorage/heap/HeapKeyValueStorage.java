@@ -77,7 +77,7 @@ public class HeapKeyValueStorage<K, V> implements KeyValueStorage<K, V> {
   }
 
   public void put(final K key, final V value, byte metadata) {
-    final Lock lock = getLockFor(key.hashCode()).writeLock();
+    final Lock lock = getLockFor(key).writeLock();
     lock.lock();
     try {
       store.put(key, value);
@@ -89,7 +89,7 @@ public class HeapKeyValueStorage<K, V> implements KeyValueStorage<K, V> {
   
   @Override
   public V get(final K key) {
-    final Lock lock = getLockFor(key.hashCode()).readLock();
+    final Lock lock = getLockFor(key).readLock();
     lock.lock();
     try {
       return store.get(key);
@@ -100,7 +100,7 @@ public class HeapKeyValueStorage<K, V> implements KeyValueStorage<K, V> {
 
   @Override
   public boolean remove(final K key) {
-    final Lock lock = getLockFor(key.hashCode()).writeLock();
+    final Lock lock = getLockFor(key).writeLock();
     lock.lock();
     try {
       final V previous = store.remove(key);
@@ -124,7 +124,7 @@ public class HeapKeyValueStorage<K, V> implements KeyValueStorage<K, V> {
 
   @Override
   public boolean containsKey(final K key) {
-    final Lock lock = getLockFor(key.hashCode()).readLock();
+    final Lock lock = getLockFor(key).readLock();
     lock.lock();
     try {
       return store.containsKey(key);
@@ -145,8 +145,8 @@ public class HeapKeyValueStorage<K, V> implements KeyValueStorage<K, V> {
     }
   }
 
-  private ReadWriteLock getLockFor(int hash) {
-    return locks[(spread(hash) >>> segmentShift) & segmentMask];
+  private ReadWriteLock getLockFor(K key) {
+    return locks[(spread(key.hashCode()) >>> segmentShift) & segmentMask];
   }
 
   private static int spread(int hash) {
