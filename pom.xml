@@ -19,7 +19,7 @@
     <dependency>
       <groupId>org.terracotta.internal</groupId>
       <artifactId>core-storage-api</artifactId>
-      <version>1.0-SNAPSHOT</version>
+      <version>1.0</version>
     </dependency>
     
     <dependency>
