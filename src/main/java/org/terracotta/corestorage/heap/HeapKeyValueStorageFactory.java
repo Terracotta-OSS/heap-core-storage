@@ -4,7 +4,6 @@
 package org.terracotta.corestorage.heap;
 
 import java.util.List;
-import java.util.concurrent.Callable;
 import org.terracotta.corestorage.KeyValueStorage;
 import org.terracotta.corestorage.KeyValueStorageConfig;
 import org.terracotta.corestorage.KeyValueStorageFactory;
@@ -38,6 +37,11 @@ public class HeapKeyValueStorageFactory implements KeyValueStorageFactory {
     @Override
     public Type getType() {
       return Type.HEAP;
+    }
+
+    @Override
+    public long getVital() {
+      return getUsed();
     }
 
     @Override
