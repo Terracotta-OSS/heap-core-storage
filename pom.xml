@@ -51,4 +51,9 @@
       <url>http://www.terracotta.org/download/reflector/releases</url>
     </pluginRepository> 
   </pluginRepositories>
+
+  <scm>
+    <connection>scm:git:git@github.softwareag.com:Terracotta-OSS/heap-core-storage.git</connection>
+    <developerConnection>scm:git:https://github.softwareag.com/Terracotta-OSS/heap-core-storage.git</developerConnection>
+  </scm>
 </project>
