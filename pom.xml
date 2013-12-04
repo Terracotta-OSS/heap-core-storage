@@ -5,13 +5,13 @@
     <artifactId>forge-parent</artifactId>
     <groupId>org.terracotta.forge</groupId>
     <version>3.0</version>
-    <relativePath/>
+    <relativePath />
   </parent>
 
   <name>Core Storage Heap Implementation</name>
   <groupId>org.terracotta.internal</groupId>
   <artifactId>heap-core-storage</artifactId>
-  <version>1.1.1</version>
+  <version>1.1.2-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <properties>
