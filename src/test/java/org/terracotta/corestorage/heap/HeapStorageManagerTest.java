@@ -90,7 +90,7 @@ public class HeapStorageManagerTest {
     final AtomicBoolean invoked = new AtomicBoolean();
     final KeyValueStorageConfig<Long, Integer> config = builder(Long.class, Integer.class).listener(new KeyValueStorageMutationListener<Long, Integer>() {
       @Override
-      public void removed(final Retriever<? extends Long> key, final Retriever<? extends Integer> value) {
+      public void removed(final Retriever<? extends Long> key) {
         invoked.set(true);
       }
 

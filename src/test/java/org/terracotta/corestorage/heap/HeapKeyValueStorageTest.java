@@ -59,10 +59,8 @@ public class HeapKeyValueStorageTest {
     final AtomicLong removed = new AtomicLong();
 
     @Override
-    public void removed(final Retriever<? extends K> key, final Retriever<? extends V> value) {
-      if (value.retrieve() != null) {
-        removed.incrementAndGet();
-      }
+    public void removed(final Retriever<? extends K> key) {
+      removed.incrementAndGet();
     }
 
     @Override

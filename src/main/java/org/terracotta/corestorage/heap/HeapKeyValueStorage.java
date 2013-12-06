@@ -141,7 +141,7 @@ public class HeapKeyValueStorage<K, V> implements KeyValueStorage<K, V> {
 
   private void notifyRemove(final K key, final V value) {
     for (KeyValueStorageMutationListener<? super K, ? super V> mutationListener : mutationListeners) {
-      mutationListener.removed(new HeapRetriever<K>(key), new HeapRetriever<V>(value));
+      mutationListener.removed(new HeapRetriever<K>(key));
     }
   }
 

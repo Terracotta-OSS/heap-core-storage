@@ -33,12 +33,12 @@ public class HeapKeyValueStorageFactoryTest {
     KeyValueStorageFactory factory = new HeapKeyValueStorageFactory();
     final KeyValueStorageConfig<Integer, String> mapConfig = builder(Integer.class, String.class).listener(new KeyValueStorageMutationListener<Integer, String>() {
       @Override
-      public void removed(final Retriever<? extends Integer> key, final Retriever<? extends String> value) {
+      public void removed(final Retriever<? extends Integer> key) {
         invoked.set(true);
       }
 
       @Override
-      public void added(final Retriever<? extends Integer> key, final Retriever<? extends String> value, final byte metadata) {
+      public void added(final Retriever<? extends Integer> key,  final Retriever<? extends String> value,final byte metadata) {
         invoked.set(true);
       }
     }).build();
