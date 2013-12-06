@@ -5,20 +5,20 @@
     <artifactId>forge-parent</artifactId>
     <groupId>org.terracotta.forge</groupId>
     <version>3.0</version>
-    <relativePath />
+    <relativePath/>
   </parent>
 
   <name>Core Storage Heap Implementation</name>
   <groupId>org.terracotta.internal</groupId>
   <artifactId>heap-core-storage</artifactId>
-  <version>1.1.2-SNAPSHOT</version>
+  <version>1.1.2</version>
   <packaging>jar</packaging>
 
   <properties>
   
-    <metadata.build.jenkins.url>http://jenkinsmaster.terracotta.lan:9000/job/heap-core-storage_trunk_releaser/3/</metadata.build.jenkins.url>
+    <metadata.build.jenkins.url>http://jenkinsmaster.terracotta.lan:9000/job/heap-core-storage_trunk_releaser/4/</metadata.build.jenkins.url>
     <metadata.build.maven.active.profiles>terracotta-repositories,release,tc-publish</metadata.build.maven.active.profiles>
-    <metadata.svn.revision>41559</metadata.svn.revision>
+    <metadata.svn.revision>41735</metadata.svn.revision>
   </properties>
 
   <dependencies>
