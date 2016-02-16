@@ -21,7 +21,7 @@ The Initial Developer of the Covered Software is
   <parent>
     <artifactId>forge-parent</artifactId>
     <groupId>org.terracotta.forge</groupId>
-    <version>3.0</version>
+    <version>3.20</version>
     <relativePath />
   </parent>
 
