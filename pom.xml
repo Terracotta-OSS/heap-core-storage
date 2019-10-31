@@ -26,14 +26,10 @@ The Initial Developer of the Covered Software is
   <name>Heap Core Storage Implementation</name>
   <groupId>org.terracotta.internal</groupId>
   <artifactId>heap-core-storage</artifactId>
-  <version>1.2.0</version>
+  <version>1.2.1-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <properties>
-  
-    <metadata.build.jenkins.url>http://jenkins.terracotta.eur.ad.sag:8080/job/heap-core-storage_trunk_releaser/1/</metadata.build.jenkins.url>
-    <metadata.build.maven.active.profiles>terracotta-repositories,release,tc-publish,fullmode</metadata.build.maven.active.profiles>
-    <metadata.svn.revision>53000</metadata.svn.revision>
   </properties>
 
   <dependencies>
